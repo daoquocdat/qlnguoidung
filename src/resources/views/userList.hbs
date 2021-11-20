@@ -1,0 +1,65 @@
+
+<form id="form">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Email</th>
+                <th scope="col">Name</th>
+                <th scope="col">Phone</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each userList}}
+                <tr>
+                    <th scope="col">{{sum @index 1}}</th>
+                    <th scope="col">{{this.email}}</th>
+                    <th scope="col">{{this.name}}</th>
+                    <th scope="col">{{this.phone}}</th>
+                    <th>                    
+                        <button type="submit" class="btnDelete btn btn-danger" data-id="{{this._id}}">Delete</button>
+                        <a href="/{{this._id}}/update-user" class="btnUpdate btn btn-success">Update</a>
+                        <a href="/{{this._id}}/user-detail" class="btnDetail btn btn-primary">Detail</a>
+                    </th>
+                </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</form>
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        var form = document.getElementById('form')
+        var btnDelete = document.querySelectorAll('.btnDelete')
+        console.log(btnDelete)
+        form.addEventListener('submit', function(e){
+            e.preventDefault()
+            btnDelete.forEach((btn) => {
+                //console.log(btn)
+                btn.onclick = function(){           
+                    var idbtn = btn.getAttribute('data-id')
+                    var row = btn.parentElement.parentElement
+                    //console.log(btn.parentElement.parentElement)
+                    var xacnhan = confirm('Do you want delete user?')
+                    if(xacnhan == true){
+                        console.log(idbtn)
+                        row.remove()
+                        axios.post('/'+idbtn+'/delete-user?_method=DELETE')
+                            .then((res) =>{
+                                console.log(res.data)
+                                if(res.data.message == 'xoa thanh cong'){
+                                    alert('Successfully!!!')
+                                    //location.assign('/user-list')
+                                }
+                            })
+                            .catch(() => {
+                                console.log('thát bại')
+                            })
+                    }
+                   
+                }
+            })
+        })
+        
+    })
+</script>
